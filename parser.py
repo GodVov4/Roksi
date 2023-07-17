@@ -1,6 +1,16 @@
 from handler import Record
 from constants import COMMANDS
-from handler import input_error
+
+
+def input_error(func):
+    def errors_catcher(command):
+        try:
+            function = func(command)
+        except (KeyError, TypeError):
+            return 'Command not found.'
+        else:
+            return function
+    return errors_catcher
 
 
 @input_error
