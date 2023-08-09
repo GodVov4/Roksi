@@ -2,13 +2,14 @@ from handler import *
 
 
 COMMANDS = {
-    'hello': [0, hello],
-    'hi': [0, hello],
-    'add': [2, add],
-    'change': [2, change],
-    'phone': [1, phone],
-    'show all': [0, show_all],
-    'good bye': [0, goodbye],
-    'close': [0, goodbye],
-    'exit': [0, goodbye]
+    'hello': hello,
+    'hi': hello,
+    'good bye': goodbye,
+    'close': goodbye,
+    'exit': goodbye,
+    'show all': address_book.show_all,
+    'phone': address_book.get_phones,
+    'delete': address_book.del_phone,
+    'add': address_book.add_record,
+    'change': address_book.change_phone
 }
