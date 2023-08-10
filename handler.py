@@ -3,6 +3,24 @@ from random import choice
 from prints import WELCOME, HELP
 
 
+def input_error(func):
+    def errors_catcher(command):
+        try:
+            function = func(command)
+        except TypeError:
+            return 'Add a contact name.'
+        except (IndexError, KeyError, ValueError):
+            if func.__name__ == 'pars_inputs':
+                return 'Command not found.'
+            elif func.__name__ in ['add_record', 'change_phone']:
+                return 'Give me name and phone please.'
+            elif func.__name__ == 'phone':
+                return 'Enter user name.'
+        else:
+            return function
+    return errors_catcher
+
+
 def hello():
     return f'{choice(WELCOME)} My name is Roksi. {choice(HELP)}'
 
@@ -25,7 +43,7 @@ class Phone(Field):
 
 
 class Record:
-    def __init__(self, name: str, phone=None, *_):
+    def __init__(self, name: str, phone='Empty', *_):
         self.name = Name(value=name.capitalize())
         self.phones = []
         if Phone(phone):
@@ -44,6 +62,8 @@ class Record:
             change = input(f'Contact "{self.name.value}" stores numbers '
                            f'{[i.value for i in self.phones]}. What number do I need to change? ')
             if change in [i.value for i in self.phones]:
+                if phone == 'Empty':
+                    phone = input(f'What number do you want to add instead of "{change}"? ')
                 self.del_phone(change)
                 break
             return 'Number does not exist.'
@@ -86,20 +106,3 @@ class AddressBook(UserDict):
 
 
 address_book = AddressBook()
-
-
-# def input_error(func):
-#     def errors_catcher(command):
-#         try:
-#             function = func(command)
-#         except (IndexError, KeyError, ValueError):
-#             if func.__name__ == 'pars_inputs':
-#                 return 'Command not found'
-#             elif func.__name__ in ['add', 'change']:
-#                 return 'Give me name and phone please'
-#             elif func.__name__ == 'phone':
-#                 return 'Enter user name'
-#         else:
-#             return function
-#     return errors_catcher
-#
