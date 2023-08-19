@@ -1,10 +1,10 @@
-import parser
+from parser import pars_inputs
 
 
 def main():
     while True:
         user_input = input('>>> ').lower()
-        output = parser.pars_inputs(user_input)
+        output = pars_inputs(user_input)
         print(output)
         if output == 'Good bye!':
             exit()
