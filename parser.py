@@ -3,9 +3,9 @@ from constants import COMMANDS
 
 
 def input_error(func):
-    def errors_catcher(command):
+    def errors_catcher(*args, **kwargs):
         try:
-            function = func(command)
+            function = func(*args, **kwargs)
         except (KeyError, TypeError):
             return 'Command not found.'
         else:

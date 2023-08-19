@@ -49,7 +49,7 @@ class Record:
 class AddressBook(UserDict):
     def add_record(self, record: Record) -> str:
         if record.name.value in self.data.keys():
-            if self.data[record.name.value].phones == [None]:
+            if not self.data[record.name.value].phones:
                 self.data[record.name.value] = record
             else:
                 self.data[record.name.value].phones.extend(record.phones)
@@ -60,17 +60,19 @@ class AddressBook(UserDict):
 
     def change_phone(self, record: Record) -> str:
         data_record = self.data.get(record.name.value)
-        if not record.new_phone.value:
-            return 'Invalid format. Enter <name> <old number> <new number>.'
+        if not data_record:
+            return f'Contact "{record.name.value}" no numbers'
         elif record.phones[0].value not in [i.value for i in data_record.phones]:
-            return f'Contact {record.name.value} no number {record.phones[0].value}.'
+            return f'Contact "{record.name.value}" no number {record.phones[0].value}.'
+        elif not record.new_phone.value:
+            return 'Invalid format. Enter <name> <old number> <new number>.'
         elif data_record:
             return data_record.change_phone(record.phones[0].value, record.new_phone.value)
         else:
             return f'Contact "{record.name.value}" not found.'
 
     def get_phones(self, record: Record) -> str:
-        if self.data.get(record.name.value):
+        if record.name.value in self.data:
             return (f'Contact "{record.name.value}" '
                     f'have numbers: {[i.value for i in self.data[record.name.value].phones]}.')
         return 'Contact not found.'
