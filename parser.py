@@ -1,5 +1,4 @@
-from handler import Record
-from constants import COMMANDS
+from functions import COMMANDS
 
 
 def input_error(func):
@@ -17,6 +16,6 @@ def input_error(func):
 def pars_inputs(command):
     command = command.strip()
     if command in COMMANDS.keys():
-        return COMMANDS[command]()
+        return COMMANDS.get(command)()
     split_command = command.split()
-    return COMMANDS[split_command[0]](Record(*split_command[1:]))
+    return COMMANDS.get(split_command[0])(*split_command[1:])
