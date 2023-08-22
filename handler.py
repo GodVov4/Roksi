@@ -15,12 +15,11 @@ class Phone(Field):
 
 
 class Record:
-    def __init__(self, name: str, phone=None, new_phone=None, *_):
+    def __init__(self, name: str, phone=None, *_):
         self.name = Name(value=name.capitalize())
         self.phones = []
         if phone:
             self.add_phone_number(phone)
-        self.new_phone = Phone(new_phone)
 
     def add_phone_number(self, phone: str) -> None:
         self.phones.append(Phone(phone))
