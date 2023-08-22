@@ -1,14 +1,4 @@
 from collections import UserDict
-from random import choice
-from prints import WELCOME, HELP
-
-
-def hello():
-    return f'{choice(WELCOME)} My name is Roksi. {choice(HELP)}'
-
-
-def goodbye():
-    return 'Good bye!'
 
 
 class Field:
@@ -58,23 +48,23 @@ class AddressBook(UserDict):
             self.data[record.name.value] = record
             return f'Contact "{record.name.value}" added.'
 
-    def change_phone(self, record: Record) -> str:
-        data_record = self.data.get(record.name.value)
+    def change_phone(self, name: str, old_phone: str, new_phone: str) -> str:
+        data_record = self.data.get(name.capitalize())
         if not data_record:
-            return f'Contact "{record.name.value}" no numbers'
-        elif record.phones[0].value not in [i.value for i in data_record.phones]:
-            return f'Contact "{record.name.value}" no number {record.phones[0].value}.'
-        elif not record.new_phone.value:
+            return f'Contact "{name.capitalize()}" no numbers'
+        elif old_phone not in [i.value for i in data_record.phones]:
+            return f'Contact "{name.capitalize()}" no number {old_phone}.'
+        elif not new_phone:
             return 'Invalid format. Enter <name> <old number> <new number>.'
         elif data_record:
-            return data_record.change_phone(record.phones[0].value, record.new_phone.value)
+            return data_record.change_phone(old_phone, new_phone)
         else:
-            return f'Contact "{record.name.value}" not found.'
+            return f'Contact "{name.capitalize()}" not found.'
 
-    def get_phones(self, record: Record) -> str:
-        if record.name.value in self.data:
-            return (f'Contact "{record.name.value}" '
-                    f'have numbers: {[i.value for i in self.data[record.name.value].phones]}.')
+    def get_phones(self, name: str) -> str:
+        if name.capitalize() in self.data:
+            return (f'Contact "{name.capitalize()}" '
+                    f'have numbers: {[i.value for i in self.data[name.capitalize()].phones]}.')
         return 'Contact not found.'
 
     def show_all(self) -> str:
@@ -83,9 +73,9 @@ class AddressBook(UserDict):
             data[k] = [i.value for i in v.phones]
         return f'Address book: {data}.'
 
-    def del_phone(self, record: Record) -> str:
-        del self.data[record.name.value]
-        return f'Contact "{record.name.value}" deleted.'
+    def del_contact(self, name: str) -> str:
+        del self.data[name.capitalize()]
+        return f'Contact "{name.capitalize()}" deleted.'
 
 
 address_book = AddressBook()
