@@ -5,8 +5,10 @@ def input_error(func):
     def errors_catcher(*args, **kwargs):
         try:
             function = func(*args, **kwargs)
-        except TypeError:
+        except (TypeError, IndexError):
             return 'Incorrect command.'
+        except ValueError as too_long:
+            return too_long
         else:
             return function
     return errors_catcher
