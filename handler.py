@@ -1,6 +1,8 @@
+import pickle
 from collections import UserDict
 from datetime import date
 import re
+from pathlib import Path
 
 
 class Iterator(UserDict):
@@ -15,9 +17,12 @@ class Iterator(UserDict):
         page = []
         Iterator.page_count += 1
         for index in range(Iterator.list_index, len(address_book.data)):
-            page.append(
-                list([name, [i.value for i in phone.phones]] for name, phone in address_book.data.items())[index]
-            )
+            contact = [
+                [name, [phone.value for phone in record.phones]] for name, record in address_book.data.items()
+            ][index]
+            if hasattr(address_book.data.get(contact[0]), 'birthday'):
+                contact.append(address_book.data.get(contact[0]).birthday.value)
+            page.append(contact)
             Iterator.list_index += 1
             if len(page) == self.number_of_records or Iterator.list_index == len(address_book.data):
                 break
@@ -109,6 +114,13 @@ class Record:
 
 
 class AddressBook(Iterator):
+    def __init__(self):
+        super().__init__()
+        filename = 'address_book.bin'
+        if Path(filename).exists():
+            with open(filename, 'rb') as file:
+                self.data = pickle.load(file)
+
     def add_record(self, record: Record) -> str:
         if record.name.value in self.data:
             if hasattr(record, 'birthday'):
@@ -148,11 +160,15 @@ class AddressBook(Iterator):
                     f'{[i.value for i in self.data[name.capitalize()].phones]}, birthday {birth}.')
         return 'Contact not found.'
 
-    # def show_all(self) -> str:
-    #     data = {}
-    #     for k, v in self.data.items():
-    #         data[k] = [i.value for i in v.phones]
-    #     return f'Address book: {data}.'
+    def filter_contacts(self, pattern: str) -> str:
+        data = []
+        for name, record in self.data.items():
+            if (pattern.lower() in name.lower()
+                    or any(pattern.lower() in phone.value.lower() for phone in record.phones)):
+                data.append(name)
+                data.append([i.value for i in record.phones])
+                data.append(record.birthday.value) if hasattr(record, 'birthday') else None
+        return f'Filtered address book:\n{data}.'
 
     def del_contact(self, name: str) -> str:
         del self.data[name.capitalize()]

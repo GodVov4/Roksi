@@ -31,12 +31,16 @@ def end_iterator() -> str:
     return 'Address book closed'
 
 
-def get_birthday(name: str) -> str:
+def get_birthday(name: str) -> AddressBook:
     return address_book.get_birthday(name)
 
 
 def get_phone(name: str) -> AddressBook:
     return address_book.get_phones(name)
+
+
+def search(pattern: str) -> AddressBook:
+    return address_book.filter_contacts(pattern)
 
 
 def change(name: str, old_phone: str, new_phone: str) -> AddressBook:
@@ -59,6 +63,7 @@ COMMANDS = {
     'end': end_iterator,
     'birthday': get_birthday,
     'phone': get_phone,
+    'search': search,
     'change': change,
     'delete': delete,
 }
