@@ -1,7 +1,8 @@
 import pickle
+import re
+from abc import ABC, abstractmethod
 from collections import UserDict
 from datetime import date
-import re
 from pathlib import Path
 
 
@@ -75,7 +76,59 @@ class Birthday(Field):
             raise ValueError('Incorrect birthday.')
 
 
-class Record:
+class AbsRecord(ABC):
+    @abstractmethod
+    def add_phone_number(self, phone: str) -> None:
+        pass
+
+    @abstractmethod
+    def add_birthday(self, birthday: str) -> None:
+        pass
+
+    @abstractmethod
+    def del_phone(self, phone: str) -> None:
+        pass
+
+    @abstractmethod
+    def change_phone(self, old_phone: str, new_phone: str) -> str:
+        pass
+
+    @abstractmethod
+    def days_to_birthday(self) -> int | str:
+        pass
+
+
+class AbsBook(ABC):
+    @abstractmethod
+    def add_record(self, record: AbsRecord) -> None:
+        pass
+
+    @abstractmethod
+    def change_phone(self, name: str, old_phone: str, new_phone: str) -> str:
+        pass
+
+    @abstractmethod
+    def get_phones(self, name: str) -> str:
+        pass
+
+    @abstractmethod
+    def filter_contacts(self, pattern: str) -> str:
+        pass
+
+    @abstractmethod
+    def del_contact(self, name: str) -> str:
+        pass
+
+    @abstractmethod
+    def iterator(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_birthday(self, name: str) -> AbsRecord:
+        pass
+
+
+class Record(AbsRecord):
     def __init__(self, name: str, phone=None, birthday=None, *_):
         self.name = Name(value=name.capitalize())
         self.phones = []
@@ -113,7 +166,7 @@ class Record:
             raise f'Contact "{self.name.value}" does not have a birthday record'
 
 
-class AddressBook(Iterator):
+class AddressBook(AbsBook, Iterator):
     def __init__(self):
         super().__init__()
         filename = 'address_book.bin'
